@@ -35,7 +35,9 @@ public class Main {
 
 //        print();
 
-        while (TIME++ < 100) {
+        while (TIME < 100) {
+            if (map[R][C] == K) return TIME;
+
             if (X >= Y) {
                 Y = row(X, Y);
 //                System.out.println(Y);
@@ -46,7 +48,7 @@ public class Main {
 
 //            print();
 
-            if (map[R][C] == K) return TIME;
+            TIME++;
         }
 
         return -1;
