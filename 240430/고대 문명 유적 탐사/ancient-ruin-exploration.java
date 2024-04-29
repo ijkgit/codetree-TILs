@@ -62,10 +62,21 @@ public class Main {
 //                    System.out.println(x + " " + y + " " + d);
 //                    print();
                     int value = explore();
+//                    if (max == value) {
+//                        if (d == rd) {
+//                            if (y == ry) {
+//                                if (x < rx)
+//                            }
+//                        }
+//                    }
                     if (max < value || (max == value && d < rd)) {
-
                         max = value; rx = x; ry = y; rd = d;
 //                        System.out.println(max);
+                    }
+                    if (max == value && d == rd) {
+                        if (y < ry) {
+                            max = value; rx = x; ry = y; rd = d;
+                        }
                     }
                 }
             }
@@ -88,22 +99,26 @@ public class Main {
         int ans = 0;
         while (true) {
             int res = realExplore();
+//            System.out.println(res);
             if (res == 0) break;
             else ans += res;
             update();
 //            print2();
         }
 
+//        print2();
         return ans;
     }
 
     private static void update() {
+//        print2();
         for (int y = 0; y < N; y++) {
             for (int x = N - 1; x >= 0; x--) {
 //                System.out.println(bag);
                 if (map[x][y] == -1) map[x][y] = bag.poll();
             }
         }
+//        print2();
     }
 
     private static int realExplore() {
