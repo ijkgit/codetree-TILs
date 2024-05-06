@@ -1,5 +1,3 @@
-// package edu.ssafy.im.CodeTree.treeKillAll;
-
 import java.io.*;
 import java.util.*;
 
@@ -72,7 +70,8 @@ public class Main {
     }
 
     private static void kill() {
-        spread(findMax());
+        Tree tree = findMax();
+        if (tree.x != -1) spread(tree);
     }
 
     private static void spread(Tree tree) {
@@ -94,7 +93,7 @@ public class Main {
     }
 
     private static Tree findMax() {
-        int rs = 0, rx = 0, ry = 0;
+        int rs = 0, rx = -1, ry = -1;
         for (int x = 0; x < N; x++) {
             for (int y = 0; y < N; y++) {
                 if (map[x][y] <= 0) continue;
@@ -104,7 +103,7 @@ public class Main {
                         int nx = x + d[0] * k;
                         int ny = y + d[1] * k;
 
-                        if (!checkRange(nx, ny) || map[nx][ny] == 0 || map[nx][ny] == -1) break;
+                        if (!checkRange(nx, ny) || map[nx][ny] <= 0) break;
                         sum += map[nx][ny];
                     }
                 }
