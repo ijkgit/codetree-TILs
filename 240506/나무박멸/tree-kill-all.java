@@ -41,7 +41,7 @@ public class Main {
         for (int x = 0; x < N; x++) {
             for (int y = 0; y < N; y++) {
                 if (visited[x][y] > 0) visited[x][y]--;
-                if (map[x][y] == -2 && visited[x][y] == 0) map[x][y] = 0;
+                else if (map[x][y] == -2) map[x][y] = 0;
             }
         }
     }
