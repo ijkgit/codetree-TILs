@@ -6,7 +6,6 @@ import java.util.*;
 public class Main {
     private static int N, M, K, C;
     private static int[][] map, copyMap, visited;
-    private static List<Tree> trees, copyTrees;
     private static final int[][] direction = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
     private static final int[][] diagonal = {{-1, -1}, {-1, 1}, {1, 1}, {1, -1}};
     private static int ans = 0;
@@ -25,12 +24,10 @@ public class Main {
         map = new int[N][N];
         copyMap = new int[N][N];
         visited = new int[N][N];
-        trees = new ArrayList<>();
         for (int x = 0; x < N; x++) {
             st = new StringTokenizer(br.readLine());
             for (int y = 0; y < N; y++) {
                 map[x][y] = Integer.parseInt(st.nextToken());
-                if (map[x][y] > 0) trees.add(new Tree(x, y));
             }
         }
 
@@ -44,7 +41,7 @@ public class Main {
         for (int x = 0; x < N; x++) {
             for (int y = 0; y < N; y++) {
                 if (visited[x][y] > 0) visited[x][y]--;
-                else if (map[x][y] == -2) map[x][y] = 0;
+                if (map[x][y] == -2 && visited[x][y] == 0) map[x][y] = 0;
             }
         }
     }
@@ -79,7 +76,6 @@ public class Main {
     }
 
     private static void spread(Tree tree) {
-//        System.out.println(tree.x + " " + tree.y);
         map[tree.x][tree.y] = -2;
         visited[tree.x][tree.y] = C;
         for (int[] d : diagonal) {
@@ -88,29 +84,35 @@ public class Main {
                 int ny = tree.y + d[1] * k;
 
                 if (!checkRange(nx, ny)) break;
+                if (map[nx][ny] == -1) break;
                 int tmp = map[nx][ny];
                 map[nx][ny] = -2;
                 visited[nx][ny] = C;
-                if (tmp == -1 || tmp == 0) break;
+                if (tmp == 0 || tmp == -2) break;
             }
         }
     }
 
     private static Tree findMax() {
         int rs = 0, rx = 0, ry = 0;
-        for (Tree tree : trees) {
-            int sum = map[tree.x][tree.y];
-            for (int[] d : diagonal) {
-                for (int k = 1; k <= K; k++) {
-                    int nx = tree.x + d[0] * k;
-                    int ny = tree.y + d[1] * k;
+        for (int x = 0; x < N; x++) {
+            for (int y = 0; y < N; y++) {
+                if (map[x][y] <= 0) continue;
+                int sum = map[x][y];
+                for (int[] d : diagonal) {
+                    for (int k = 1; k <= K; k++) {
+                        int nx = x + d[0] * k;
+                        int ny = y + d[1] * k;
 
-                    if (!checkRange(nx, ny) || map[nx][ny] <= 0) break;
-                    sum += map[nx][ny];
+                        if (!checkRange(nx, ny) || map[nx][ny] == 0 || map[nx][ny] == -1) break;
+                        sum += map[nx][ny];
+                    }
                 }
+                if (sum < rs || (sum == rs && x > rx) || (sum == rs && x == rx && y > ry)) continue;
+                rs = sum;
+                rx = x;
+                ry = y;
             }
-            if (sum < rs || (sum == rs && tree.x > rx) || (sum == rs && tree.x == rx && tree.y > ry)) continue;
-            rs = sum; rx = tree.x; ry = tree.y;
         }
 
         ans += rs;
@@ -122,31 +124,31 @@ public class Main {
         copy();
 
         boolean[][] visited = new boolean[N][N];
-        for (Tree tree : trees) {
-            if (map[tree.x][tree.y] == -2) continue;
+        for (int x = 0; x < N; x++) {
+            for (int y = 0; y < N; y++) {
+                if (map[x][y] <= 0) continue;
 
-            int count = 0;
-            for (int[] d : direction) {
-                int nx = tree.x + d[0];
-                int ny = tree.y + d[1];
+                int count = 0;
+                for (int[] d : direction) {
+                    int nx = x + d[0];
+                    int ny = y + d[1];
 
-                if (!checkRange(nx, ny)) continue;
-                if (map[nx][ny] == 0) count++;
-            }
+                    if (!checkRange(nx, ny)) continue;
+                    if (map[nx][ny] == 0) count++;
+                }
 
-            if (count == 0) continue;
-            int newTree = map[tree.x][tree.y] / count;
+                if (count == 0) continue;
+                int newTree = map[x][y] / count;
 
-            for (int[] d : direction) {
-                int nx = tree.x + d[0];
-                int ny = tree.y + d[1];
+                for (int[] d : direction) {
+                    int nx = x + d[0];
+                    int ny = y + d[1];
 
-                if (!checkRange(nx, ny)) continue;
-                if (map[nx][ny] != 0) continue;
+                    if (!checkRange(nx, ny)) continue;
+                    if (map[nx][ny] != 0) continue;
 
-                copyMap[nx][ny] += newTree;
-                if (!visited[nx][ny]) copyTrees.add(new Tree(nx, ny));
-                visited[nx][ny] = true;
+                    copyMap[nx][ny] += newTree;
+                }
             }
         }
 
@@ -159,9 +161,6 @@ public class Main {
                 map[x][y] = copyMap[x][y];
             }
         }
-
-        trees = new ArrayList<>();
-        trees.addAll(copyTrees);
     }
 
     private static void copy() {
@@ -170,23 +169,22 @@ public class Main {
                 copyMap[x][y] = map[x][y];
             }
         }
-
-        copyTrees = new ArrayList<>();
-        copyTrees.addAll(trees);
     }
 
     private static void grow() {
-        for (Tree tree : trees) {
-            if (map[tree.x][tree.y] == -2) continue;
-            int count = 0;
-            for (int[] d : direction) {
-                int nx = tree.x + d[0];
-                int ny = tree.y + d[1];
+        for (int x = 0; x < N; x++) {
+            for (int y = 0; y < N; y++) {
+                if (map[x][y] <= 0) continue;
+                int count = 0;
+                for (int[] d : direction) {
+                    int nx = x + d[0];
+                    int ny = y + d[1];
 
-                if (!checkRange(nx, ny)) continue;
-                if (map[nx][ny] > 0) count++;
+                    if (!checkRange(nx, ny)) continue;
+                    if (map[nx][ny] > 0) count++;
+                }
+                map[x][y] += count;
             }
-            map[tree.x][tree.y] += count;
         }
     }
 
