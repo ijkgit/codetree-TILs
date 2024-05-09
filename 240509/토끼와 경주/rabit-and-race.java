@@ -7,9 +7,10 @@ public class Main {
     private static final int[][] direction = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
 
     static class Rabbit implements Comparable<Rabbit> {
-        int pid, d, n, r, c, s;
+        int pid, d, n, r, c;
+        long s;
 
-        public Rabbit(int pid, int d, int n, int r, int c, int s) {
+        public Rabbit(int pid, int d, int n, int r, int c, long s) {
             this.pid = pid;
             this.d = d;
             this.n = n;
