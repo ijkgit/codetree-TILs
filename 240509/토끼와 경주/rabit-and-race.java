@@ -81,7 +81,7 @@ public class Main {
                         nr = dd;
                     }
                 } else {
-                    int dd = nr % (M - 1);
+                    int dd = nc % (M - 1);
                     if ((nc / (M - 1)) % 2 == 0) {
                         if (dd >= 0) nc = (M - 1) + dd;
                         else nc = (M - 1) - dd;
