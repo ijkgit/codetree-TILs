@@ -7,7 +7,8 @@ public class Main {
     private static final int[][] direction = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
 
     static class Rabbit implements Comparable<Rabbit> {
-        long pid, d, n, r, c, s;
+        int pid, d, n, r, c;
+        long s;
 
         public Rabbit(int pid, int d, int n, int r, int c, long s) {
             this.pid = pid;
@@ -23,14 +24,14 @@ public class Main {
             if (this.n == o.n) {
                 if (this.r + this.c == o.r + o.c) {
                     if (this.r == o.r) {
-                        if (this.c == o.c) return Long.compare(this.pid, o.pid);
-                        return Long.compare(this.c, o.c);
+                        if (this.c == o.c) return this.pid - o.pid;
+                        return this.c - o.c;
                     }
-                    return Long.compare(this.r, o.r);
+                    return this.r - o.r;
                 }
-                return Long.compare((this.r + this.c), (o.r + o.c));
+                return (this.r + this.c) - (o.r + o.c);
             }
-            return Long.compare(this.n, o.n);
+            return this.n - o.n;
         }
 
         @Override
@@ -130,7 +131,7 @@ public class Main {
     private static void finish() throws IOException {
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
         StringBuilder sb = new StringBuilder();
-        int ans = 0;
+        long ans = 0;
         for (Rabbit r : rabbits) ans = Math.max(ans, r.s);
         sb.append(ans);
         bw.write(sb.toString());
