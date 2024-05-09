@@ -66,30 +66,29 @@ public class Main {
         int fs = 0, fr = 0, fc = 0, fpid = 0;
         for (int k = 0; k < K; k++) {
             Rabbit rabbit = rabbits.poll();
-
             // 이동
             int rs = 0, rr = 0, rc = 0;
             for (int dir = 0; dir < direction.length; dir++) {
-                int nr = rabbit.r + direction[dir][0];
-                int nc = rabbit.c + direction[dir][1];
+                int nr = rabbit.r + direction[dir][0] * rabbit.d;
+                int nc = rabbit.c + direction[dir][1] * rabbit.d;
                 if (dir % 2 == 0) {
                     int dd = nr % (N - 1);
-                    if ((nr / (N - 1)) % 2 == 0) {
-                        if (dd >= 0) nr = (N - 1) + dd;
-                        else nr = (N - 1) - dd;
+                    if ((nr / (N - 1)) % 2 != 0) {
+                        if (dd >= 0) nr = (N - 1) - dd;
+                        else nr = (N - 1) + dd;
                     } else {
-                        nr = dd;
+                        nr = Math.abs(dd);
                     }
                 } else {
                     int dd = nc % (M - 1);
-                    if ((nc / (M - 1)) % 2 == 0) {
-                        if (dd >= 0) nc = (M - 1) + dd;
-                        else nc = (M - 1) - dd;
+                    if ((nc / (M - 1)) % 2 != 0) {
+                        if (dd >= 0) nc = (M - 1) - dd;
+                        else nc = (M - 1) + dd;
                     } else {
-                        nc = dd;
+                        nc = Math.abs(dd);
                     }
                 }
-                int ns = nr + nc;
+                int ns = (nr+1) + (nc+1);
                 if (rs < ns || (rs == ns && rr < nr) || (rs == ns && rr == nr && rc < nc)) {
                     rs = ns;
                     rr = nr;
