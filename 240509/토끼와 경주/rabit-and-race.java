@@ -23,14 +23,14 @@ public class Main {
             if (this.n == o.n) {
                 if (this.r + this.c == o.r + o.c) {
                     if (this.r == o.r) {
-                        if (this.c == o.c) return this.pid - o.pid;
-                        return this.c - o.c;
+                        if (this.c == o.c) return Long.compare(this.pid, o.pid);
+                        return Long.compare(this.c, o.c);
                     }
-                    return this.r - o.r;
+                    return Long.compare(this.r, o.r);
                 }
-                return (this.r + this.c) - (o.r + o.c);
+                return Long.compare((this.r + this.c), (o.r + o.c));
             }
-            return this.n - o.n;
+            return Long.compare(this.n, o.n);
         }
 
         @Override
